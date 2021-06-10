@@ -11,13 +11,14 @@ import { Router, NavigationExtras } from '@angular/router';
 import { ModalController, LoadingController } from '@ionic/angular';
 import { CameraResultType, CameraSource, Camera } from "@capacitor/camera";
 
-import { Producto } from '../../interfaces/modelo';
+import { Producto, Joyeria } from '../../interfaces/modelo';
 import { FirestoreService } from '../../services/firestore.service'
 import { ResultsPage } from '../results/results.page'
 import { PhotoService } from "../../services/photo.service";
 import { ScanServiceService } from '../../services/scan-service.service'
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import {from} from 'rxjs'
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab3',
@@ -33,6 +34,9 @@ export class Tab3Page implements OnInit{
   base64Image: string;
   selectedFile: File = null;
   downloadURL: Observable<string>;
+  joyeria: Joyeria [] = [];
+
+  eanValue: string;
 
   /**
    * Atributos Scanner
@@ -69,9 +73,81 @@ export class Tab3Page implements OnInit{
 
 
 
-  tomarFoto(){
-    this._photoService.takePicture();
+  async tomarFoto(){
 
+    const header = new HttpHeaders();
+    header.append("Accept", 'application/json');
+    header.append('Content-Type', 'application/json');
+    const option2 = {
+      headers: header,
+      params: new HttpParams().append('key', environment.googleCloudVisionAPIKey)
+        
+    }
+    const options = {
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64,
+    };
+
+    const image = await Camera.getPhoto(options);
+
+    const imageUrl = image.base64String;
+  
+    const body ={
+      "requests": [
+        {
+          "image": {
+              "content": imageUrl
+          },
+          "features": [
+            {
+              "type": "PRODUCT_SEARCH",
+              "maxResults": 1
+            }
+          ],
+          "imageContext": {
+            "productSearchParams": {
+              "productSet": "projects/productsearchvision/locations/us-west1/productSets/catalog",
+              "productCategories": [
+                   "general-v1"
+              ]
+            }
+          }
+        }
+      ]
+    };
+    
+     this.http.post<Joyeria>('https://vision.googleapis.com/v1/images:annotate', body, option2)
+    .subscribe(data => {
+      const results = data['responses'][0]['productSearchResults']['results'];
+      results.forEach(result => { 
+        /*
+        hacer condicional sacando el score si es mayor qe 0.5 se pinta si no nada
+        if(score){}*/
+        
+          this.eanValue = result['product'].productLabels[0]['value'];
+        });
+        this._firestoreService.getCollectionParametro<Joyeria>(this.path1, 'EAN', this.eanValue)
+        .subscribe(res => {
+          console.log(res);
+          this.joyeria = res
+         
+        });
+        console.log(this.eanValue);
+    });
+    /* this._photoService.takePicture(); */
+    /* this.barcodeScanner.scan().then(barcodeData => {
+      this.datoscaneado = barcodeData.text;
+      
+    this._firestoreService.getCollectionParametro<Producto>(this.path, 'codigoBarras', this.datoscaneado)
+    .subscribe(res  => {
+      console.log(res);
+      console.log(this.datoscaneado);
+      this.productos = res;
+      console.table(this.productos);
+    });
+    */
+    
   }
 
   async getSimilarProducts(){
@@ -106,7 +182,9 @@ export class Tab3Page implements OnInit{
   }
 
   pruebaReloj(){
-    this._firestoreService.getCollectionParametro<Producto>(this.path1, 'EAN', '8410751099550')
+    
+    
+    this._firestoreService.getCollectionParametro<Producto>(this.path1, 'EAN', this.eanValue)
     .subscribe(res  => {
       console.log(res);
     });

@@ -20,21 +20,22 @@
           <ion-button (click)="pruebaLogSinModal()" shape="round" expand="block">pruebaLogSinModal</ion-button>  -->
          <!--  <ion-button shape="round" expand="block" (click)="pruebaModalFinal()">Final</ion-button>  -->
          <ion-button (click)="tomarFoto()" shape="round" expand="block">pruebaRELOJl</ion-button> 
-  
+         
 
-   <div *ngIf="productos">
+
+   
      
-      <ion-card *ngFor="let item of productos" >
+      <ion-card *ngFor="let item of joyeria" >
         <img class="img" [src]= 'item.foto' />
         <ion-card-header>
-          <ion-card-title>{{ item.nombre }}</ion-card-title>
+          <ion-card-title>{{ item.descripcion }}</ion-card-title>
           <ion-card-subtitle>{{ item.precio }}</ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
           Founded in 1829 on an isthmus Madison was named the capital of the Wisconsin Territory in 1836.
         </ion-card-content>
       </ion-card>
-    </div> 
+   
  
   <!-- fab placed to the bottom end -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

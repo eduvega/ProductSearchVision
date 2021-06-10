@@ -4,6 +4,9 @@ import { AngularFireStorage } from "@angular/fire/storage";
 import { finalize } from "rxjs/operators";
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { map } from 'rxjs/operators'
+import { Joyeria } from '../interfaces/modelo';
+import { FirestoreService } from './firestore.service';
 
 
 @Injectable({
@@ -12,8 +15,14 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 export class PhotoService {
 
   base64img: string;
+  products: Joyeria [] = [];
+  ean: string;
+  postId;
+  private path1 = 'Joyeria/';
+
+
   
-  constructor(public _fireStorage: AngularFireStorage, public http: HttpClient,  ) {}
+  constructor( _firestoreService: FirestoreService, public _fireStorage: AngularFireStorage, public http: HttpClient,  ) {}
 
   async takePicture() {
     const header = new HttpHeaders();
@@ -45,7 +54,7 @@ export class PhotoService {
           "features": [
             {
               "type": "PRODUCT_SEARCH",
-              "maxResults": 5
+              "maxResults": 1
             }
           ],
           "imageContext": {
@@ -59,12 +68,30 @@ export class PhotoService {
         }
       ]
     };
-    console.log(body);
+    /* console.log(body);
     return this.http.post('https://vision.googleapis.com/v1/images:annotate', body, option2).subscribe(data=>{
       console.log(data);
-    });
+    }); */
 
+
+  
+    return this.http.post<Producto>('https://vision.googleapis.com/v1/images:annotate', body, option2)
+    .subscribe(data => {
+     /*  console.log(data, 'soy la llamda'); */
+
+     /*  const results = data['responses'][0]['productSearchResults']['results'];
+      results.forEach(result => { */
+/*         console.log('Product labels:', result['product'].productLabels[0]['value']);
+ */        /* return this.ean = result['product'].productLabels[0]['value'];
+    
+
+      });
+      console.log(this.ean) */
+    });
   }
+
+
+
 
   
 
@@ -118,4 +145,8 @@ export class PhotoService {
         .subscribe();
     });
   }
+}
+
+interface Producto{
+  EAN: string;
 }
