@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Reultado</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/tabs/tab1">
+        <ion-icon slot="icon-only" style="color: cornflowerblue;" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div *ngFor="let producto of productos" >
+    <ion-card style="position: relative;">
+      <ion-img class="img-producto" [src]="producto.foto"></ion-img>
+      <ion-item lines="full">
+        <ion-label class="subtitulo"><b>{{producto.nombre}}</b></ion-label>
+      </ion-item>
+    
+      <p class="precio">{{producto.precio}} €</p>
+      <ion-icon  (click)="addCarrito(producto)" class="icon-producto" name="cart-sharp"></ion-icon>
+    </ion-card>
+  </div>
+
+ <!--  <ion-card *ngFor="let item of productos">
+    <img class="image" [src]="item.foto">
+
+    <ion-card-header >
+      <ion-card-title>{{ item.nombre }}</ion-card-title>
+
+      <ion-card-title style="text-align: end;">{{ item.precio }} €</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      Founded in 1829 on an isthmus Madison was named the capital of the Wisconsin Territory in 1836.
+    </ion-card-content>
+  </ion-card> -->
+
+<!--   <ion-button shape="round" expand="block" routerLink]="['/carrito']">Atras</ion-button> -->
+</ion-content>

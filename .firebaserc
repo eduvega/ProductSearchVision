@@ -1,0 +1,16 @@
+{
+  "targets": {
+    "productsearchvision": {
+      "hosting": {
+        "app": [
+          "productsearchvision"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "psv": "productsearchvision",
+    "productsearchvision": "productsearchvision",
+    "default": "productsearchvision"
+  }
+}

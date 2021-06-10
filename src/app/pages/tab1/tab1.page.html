@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Home</ion-title>
+
+    <ion-buttons style="color: cornflowerblue;" slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button routerLink="/carrito">
+        <ion-icon slot="icon-only" style="color: cornflowerblue;" name="cart-sharp"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+
+  <div *ngFor="let producto of joyeria" >
+    <ion-card style="position: relative;">
+      <ion-img class="img-producto" [src]="producto.foto"></ion-img>
+      <ion-item lines="full">
+        <ion-label class="subtitulo"><b>{{producto.descripcion}}</b></ion-label>
+      </ion-item>
+    
+      <p class="precio">{{producto.precio}} €</p>
+      <ion-icon  (click)="addCarrito(producto)" class="icon-producto" name="cart-sharp"></ion-icon>
+    </ion-card>
+  </div>
+
+ 
+</ion-content>
