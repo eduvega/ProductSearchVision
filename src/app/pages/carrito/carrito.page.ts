@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { CarritoService } from '../../services/carrito.service';
-import { Producto } from "../../interfaces/modelo";
+import { Joyeria } from '../../interfaces/modelo';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { Producto } from "../../interfaces/modelo";
 })
 export class CarritoPage implements OnInit {
 
-  carrito: Producto[] =[]
+  carrito: Joyeria[] =[]
 
   constructor(
     private _carritoService: CarritoService,
