@@ -1,6 +1,3 @@
-import { Router } from 'express';
-import { FirestoreService } from './firestore.service';
-import { Pedido, Producto, ProductoPedido } from '../interfaces/modelo';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -62,54 +59,4 @@ export class CarritoService {
     this.carritoNumeroItems.next(this.carritoNumeroItems.value + 1);
   
   }
-
-
-
-  /* loadCarrito(){
-    const path = 'Compras/' + this.id + '/' + this.path;
-    this.firestoreService.getDoc<Pedido>(this.path, this.id).subscribe(res =>{
-      if(res){
-        this.pedido = res
-      }else{
-        this.initCarrito();
-      }
-    })
-  }
-
-  initCarrito(){
-    this.pedido = {
-      id: this.id,
-      productos: [],
-      precioTotal: null
-    }
-  }
-  
-
-
-  addProducto(producto: Producto){
-    const item = this.pedido.productos.find( prodcutoPedido =>{
-      return(prodcutoPedido.producto.id === producto.id)
-    }); 
-    if(item!== undefined){
-      item.cantidad++;
-    } else{
-      const add: ProductoPedido = {
-        cantidad: 1,
-        producto: producto,
-
-      }
-      this.pedido.productos.push(add)
-    }
-    console.log('en addProducto ->', this.pedido)
-  }
-  
-  
-
-  startPedido(){
-
-  }
-
-  clearCarrito(){
-
-  } */
 }

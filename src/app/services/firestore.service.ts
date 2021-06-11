@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { Producto } from '../interfaces/modelo';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +44,16 @@ export class FirestoreService {
     return collection.valueChanges();
   }
 
+/**
+ * 
+ * @param path 
+ * @param parametro 
+ * @param value 
+ * @returns 
+ * 
+ * Funcion para realizar consultas a la base de datos
+ * en este caso buscamos uno con los parametros de igualacion
+ */
   getCollectionParametro<tipo>(path: string, parametro: string, value: string){
     const dataCollection: AngularFirestoreCollection<tipo>=
     this._database.collection<tipo>(path, ref=>

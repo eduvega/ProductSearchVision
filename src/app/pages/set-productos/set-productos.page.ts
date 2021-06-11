@@ -1,9 +1,8 @@
 import { FireStorageService } from '../../services/fire-storage.service';
-import { Producto, Joyeria } from '../../interfaces/modelo';
+import { Joyeria } from '../../interfaces/modelo';
 import { FirestoreService } from '../../services/firestore.service';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 
 @Component({
@@ -16,11 +15,6 @@ export class SetProductosPage implements OnInit {
   joyeria: Joyeria [] = []
 
   newJoyeria: Joyeria;
-
-  productos: Producto [] = []
-
-  
-  newProduct: Producto;
 
   enableNewProduct = false;
 
@@ -37,7 +31,7 @@ export class SetProductosPage implements OnInit {
               public _toastController: ToastController,
               public _alertController: AlertController,
               public _fireStorage: FireStorageService,
-              private barcodeScanner: BarcodeScanner) { }
+             ) { }
 
   ngOnInit() {
     this.getProductos();
@@ -106,27 +100,13 @@ export class SetProductosPage implements OnInit {
     
   }
 
- /*  nuevo(){
-    this.enableNewProduct = true;
-    this.newProduct = {
-      nombre: '',
-      precio: null,
-      codigoBarras: '' ,
-      foto: '',
-      id: this._firestoreService.getId(),
-      fecha: new Date,
-    };
-    
-  }
- */
   async presentLoading() {
     this.loading = await this._loadingController.create({
       cssClass: 'my-custom-class',
       message: 'Guardando...',
     });
     await this.loading.present();
-   /*  await loading.onDidDismiss();
-    console.log('Loading dismissed!'); */
+  
   }
 
   async presentToast(msg: string) {
@@ -151,15 +131,4 @@ export class SetProductosPage implements OnInit {
     } 
   }
 
-/*   async Scan(){
-    await this.barcodeScanner.scan().then(barcodeData => {
-      this.datoscaneado = barcodeData.text;
-    console.log("🚀 ~ file: tab3.page.ts ~ line 96 ~ Tab3Page ~ this.barcodeScanner.scan ~ barcodeData", barcodeData)
-      
-     }).catch(err => {
-         console.log('Error', err);
-     });
-  } */
-
-
-} //fin clase
+}

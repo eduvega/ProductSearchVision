@@ -2,6 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs"></ion-back-button>
+
       <ion-title>Configuración de productos</ion-title>
     </ion-buttons>
   </ion-toolbar>
@@ -9,11 +10,13 @@
 
 <ion-content>
   <div style="text-align: end; margin: 10px;">
-    <ion-button (click)="nuevo()" color="dark">Nuevo</ion-button>
+    <ion-button
+      (click)="nuevo()"
+      color="dark"
+    >Nuevo</ion-button>
   </div>
 
   <div *ngIf="enableNewProduct">
-
     <ion-item>
       <ion-buttons slot="end">
         <ion-button (click)="enableNewProduct = false">
@@ -24,13 +27,11 @@
         </ion-button>
       </ion-buttons>
     </ion-item>
-      
+
     <h3>Ingrese datos del producto</h3>
 
     <ion-item>
-      <ion-label
-        position="floating"
-      >Descripcion:</ion-label>
+      <ion-label position="floating">Descripcion:</ion-label>
 
       <ion-input
         [(ngModel)]="newJoyeria.descripcion"
@@ -40,9 +41,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label
-        position="floating"
-      >Precio:</ion-label>
+      <ion-label position="floating">Precio:</ion-label>
 
       <ion-input
         [(ngModel)]="newJoyeria.precio"
@@ -52,37 +51,25 @@
     </ion-item>
 
     <ion-item>
-      <ion-label
-        position="floating"
-      >Código Barras:</ion-label>
-      <ion-buttons slot="end">
-        <ion-button>
-          <ion-icon
-          slot="icon-only"
-          name="barcode-sharp" 
-          ></ion-icon> 
-        </ion-button>
-      </ion-buttons>
-        <ion-input [(ngModel)]="newJoyeria.EAN"></ion-input>
+      <ion-label position="floating">Código Barras:</ion-label>
+
+      <ion-buttons slot="end"></ion-buttons>
+      <ion-input [(ngModel)]="newJoyeria.EAN"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label
-        position="floating"
-      >Código :</ion-label>
+      <ion-label position="floating">Código :</ion-label>
+
       <ion-buttons slot="end">
-        <ion-button>
-          <ion-icon
-          slot="icon-only"
-          name="barcode-sharp" 
-          ></ion-icon> 
-        </ion-button>
+        <ion-button></ion-button>
       </ion-buttons>
-        <ion-input [(ngModel)]="newJoyeria.codigo"></ion-input>
+
+      <ion-input [(ngModel)]="newJoyeria.codigo"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label class="normal">Foto:</ion-label>
+
       <ion-buttons slot="end">
         <ion-button>
           <label for="file-upload">
@@ -91,13 +78,23 @@
               name="images"
             ></ion-icon>
           </label>
-          <input (change)="newImageUpload($event)" id="file-upload" style="display: none;" type="file" accept="image/*">
+
+          <input
+            (change)="newImageUpload($event)"
+            id="file-upload"
+            style="display: none;"
+            type="file"
+            accept="image/*"
+          >
         </ion-button>
       </ion-buttons>
     </ion-item>
 
     <ion-item>
-      <img class="image" [src]="newJoyeria.foto">
+      <img
+        class="image"
+        [src]="newJoyeria.foto"
+      >
     </ion-item>
 
     <ion-button
@@ -110,25 +107,26 @@
 
   <ion-card>
     <ion-card-title>Lista de productos</ion-card-title>
-      <ion-item *ngFor="let joyeria of joyeria">
-        <ion-label>{{joyeria.descripcion}}</ion-label>
-        <ion-buttons slot="end">
-          <ion-button (click)="newJoyeria = joyeria; enableNewProduct = true;">
-            <ion-icon
-              slot="icon-only"
-              name="create-sharp"
-            ></ion-icon>
-          </ion-button>
 
-          <ion-button (click)="borrarProducto(joyeria)">
-            <ion-icon
-              slot="icon-only"
-              color="danger"
-              name="trash-bin"
-            ></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-item>
-    </ion-card>
+    <ion-item *ngFor="let joyeria of joyeria">
+      <ion-label>{{joyeria.descripcion}}</ion-label>
 
+      <ion-buttons slot="end">
+        <ion-button (click)="newJoyeria = joyeria; enableNewProduct = true;">
+          <ion-icon
+            slot="icon-only"
+            name="create-sharp"
+          ></ion-icon>
+        </ion-button>
+
+        <ion-button (click)="borrarProducto(joyeria)">
+          <ion-icon
+            slot="icon-only"
+            color="danger"
+            name="trash-bin"
+          ></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-card>
 </ion-content>

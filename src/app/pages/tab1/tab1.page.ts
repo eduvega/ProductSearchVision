@@ -1,6 +1,6 @@
 import { FirestoreService } from '../../services/firestore.service';
 import { Component, OnInit } from "@angular/core";
-import { Producto, Joyeria } from '../../interfaces/modelo';
+import { Joyeria } from '../../interfaces/modelo';
 import { CarritoService } from '../../services/carrito.service';
 import { ToastController } from '@ionic/angular';
 

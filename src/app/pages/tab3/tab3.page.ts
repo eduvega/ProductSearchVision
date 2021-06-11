@@ -1,24 +1,17 @@
 import { Component, OnInit} from '@angular/core';
-/* import { Camera, CameraOptions } from "@ionic-native/camera/ngx"; */
 import { AngularFireStorage } from "@angular/fire/storage";
-import { AlertController, NavController } from "@ionic/angular";
+import { AlertController, NavController, ToastController } from '@ionic/angular';
 import { finalize } from "rxjs/operators";
 import { Observable } from "rxjs";
-import { ActivatedRoute } from '@angular/router';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Router, NavigationExtras } from '@angular/router';
 import { ModalController, LoadingController } from '@ionic/angular';
-import { CameraResultType, CameraSource, Camera } from "@capacitor/camera";
-
-import { Producto, Joyeria } from '../../interfaces/modelo';
+import { CameraResultType, Camera } from "@capacitor/camera";
+import { Joyeria } from '../../interfaces/modelo';
 import { FirestoreService } from '../../services/firestore.service'
-import { ResultsPage } from '../results/results.page'
-import { PhotoService } from "../../services/photo.service";
-import { ScanServiceService } from '../../services/scan-service.service'
 import { environment } from '../../../environments/environment';
-import {from} from 'rxjs'
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { CarritoService } from '../../services/carrito.service';
 
 @Component({
   selector: 'app-tab3',
@@ -34,46 +27,63 @@ export class Tab3Page implements OnInit{
   base64Image: string;
   selectedFile: File = null;
   downloadURL: Observable<string>;
-  joyeria: Joyeria [] = [];
 
+  /**
+   * Atributos Search y base de datos
+   */
+  joyeria: Joyeria [] = [];
   eanValue: string;
+  score: number;
+  private path = 'Joyeria/';
 
   /**
    * Atributos Scanner
    */
-  private path = 'Productos/';
-  private path1 = 'Joyeria/';
   datoscaneado: string;
-  productos: Producto [] = []
+
 
   constructor(
     private alertCtrl: AlertController,
     private _storage: AngularFireStorage,
-    private _photoService: PhotoService,
-    private _scanServiceService: ScanServiceService,
     public _firestoreService: FirestoreService,
     public _database: AngularFirestore,
     public nav: NavController,
     private barcodeScanner: BarcodeScanner,
     public modalController: ModalController,
-    private route : Router,
- /*    private camera: Camera, */
     public loadingController: LoadingController,
-    private http: HttpClient
+    private http: HttpClient,
+    public _toastController: ToastController,
+    public _carritoService: CarritoService,
   ) {
 
   }
   ngOnInit() {
     
   }
+
+  getCodigoBarras(){
+    this.barcodeScanner.scan().then(barcodeData => {
+      this.datoscaneado = barcodeData.text;
+    this._firestoreService.getCollectionParametro<Joyeria>(this.path, 'EAN', this.datoscaneado)
+    .subscribe(res  => {
+      console.log(res);
+      console.log(this.datoscaneado);
+      this.joyeria = res;
+      console.table(this.joyeria);
+    });
+    }).catch(err => {
+      console.log('Error', err);
+   })
+  }
+
+
   /**
-   * MEtodo que hace llamada a la api
+   * Metodo que realiza una peticion JSON con la imagen que se hace o se escoge de la galeraia.
+   * Esta foto viaja por la API de Vision y devuelve una respuesta JSON con las imagenes coincidentes.
+   * Elegimos la que mas valor de confianza tenga, capturamos el EAN asociado a ese producto coincidente
+   * Por ultimo, se manda este codigo EAN a la base de datos Firebase y pintamos el producto gracias a este 
    */
-
-
-
-
-  async tomarFoto(){
+  async searchProduct(){
 
     const header = new HttpHeaders();
     header.append("Accept", 'application/json');
@@ -116,256 +126,51 @@ export class Tab3Page implements OnInit{
         }
       ]
     };
-    
-     this.http.post<Joyeria>('https://vision.googleapis.com/v1/images:annotate', body, option2)
+    this.http.post<Joyeria>('https://vision.googleapis.com/v1/images:annotate', body, option2)
     .subscribe(data => {
       const results = data['responses'][0]['productSearchResults']['results'];
-      results.forEach(result => { 
-        /*
-        hacer condicional sacando el score si es mayor qe 0.5 se pinta si no nada
-        if(score){}*/
-        
+      results.forEach(async result => { 
+        console.log(result)
+        this.score = result.score;
+    
+        if(this.score >= 0.4){
           this.eanValue = result['product'].productLabels[0]['value'];
+         
+          this.presentToast('Busqueda exitosa');
+          
+        }else{
+          this.presentToast('No se pudo encontrar coincidencia');
+          return false;
+        }
         });
-        this._firestoreService.getCollectionParametro<Joyeria>(this.path1, 'EAN', this.eanValue)
+        this._firestoreService.getCollectionParametro<Joyeria>(this.path, 'EAN', this.eanValue)
         .subscribe(res => {
           console.log(res);
           this.joyeria = res
+
          
         });
-        console.log(this.eanValue);
     });
-    /* this._photoService.takePicture(); */
-    /* this.barcodeScanner.scan().then(barcodeData => {
-      this.datoscaneado = barcodeData.text;
-      
-    this._firestoreService.getCollectionParametro<Producto>(this.path, 'codigoBarras', this.datoscaneado)
-    .subscribe(res  => {
-      console.log(res);
-      console.log(this.datoscaneado);
-      this.productos = res;
-      console.table(this.productos);
-    });
-    */
+  }
+
+  
+  addCarrito(product){
+    product.cantidad=1;
+    this.presentToast('añadido correctamente');
+    this._carritoService.addProducto(product);
     
   }
 
-  async getSimilarProducts(){
-   /*  const options= {
-      quality: 90,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      }
-      Camera.getPhoto(options).then(async (imageData) => { */
-        /* const loading = await this.loadingController.create({
-        message: 'Getting Results...',
-        translucent: true
-        });
-        await loading.present(); */
-     /*  this._scanServiceService.getSimilarProducts().subscribe(async (result) => {
-      console.log(result)
-       */
 
-      /* let navigationExtras: NavigationExtras = {
-      queryParams: {
-      special: JSON.stringify(imageData),
-      result : JSON.stringify(result),
-      }};
-      this.route.navigate(["show-prueba"],navigationExtras)
-      await loading.dismiss() */
-     /*  }, err => {
-      console.log(err);
-      }); */
-      /* }, err => {
-      console.log(err);
-      }); */
-  }
-
-  pruebaReloj(){
-    
-    
-    this._firestoreService.getCollectionParametro<Producto>(this.path1, 'EAN', this.eanValue)
-    .subscribe(res  => {
-      console.log(res);
+  async presentToast(msg: string) {
+    const toast = await this._toastController.create({
+      message: msg,
+      duration: 2000,
+      color: 'warning',
     });
+    toast.present();
   }
 
-
-
-  async takePhoto() {
-    /* this.base64Image = await this._photoService.takePicture();
-    this.getSimilarProducts() */
-    /* this.upload(); */
-  }
-
-  /* async getCodigoBarras(){
-    this.barcodeScanner.scan().then(async barcodeData => {
-      this.datoscaneado = barcodeData.text;
-      const modal = await this.modalController.create({
-        component: ResultsPage,
-        componentProps: {
-          datoscaneado: this.datoscaneado 
-        }
-      });
-      modal.onDidDismiss().then((modelData) => {
-        if (modelData !== null) {
-          this.modelData = modelData.data;
-          console.log('Modal Data : ' + modelData.data);
-        }
-      });
-      return await modal.present();
-   
-    }).catch(err => {
-      console.log('Error', err);
-   })
-  } */
-
-  upload(): void {
-    const currentDate = Date.now();
-    const file: any = this.base64ToImage(this.base64Image);
-    const filePath = `Images/${currentDate}`;
-    const fileRef = this._storage.ref(filePath);
-
-    const task = this._storage.upload(`Images/${currentDate}`, file);
-    task
-      .snapshotChanges()
-      .pipe(
-        finalize(() => {
-          this.downloadURL = fileRef.getDownloadURL();
-          this.downloadURL.subscribe((downloadURL) => {
-            if (downloadURL) {
-              this.showSuccesfulUploadAlert();
-              this.nav.navigateForward(['/results'])
-            }else{
-              console.log('no se pudo');
-            }
-            console.log(downloadURL);
-          });
-        })
-      )
-      .subscribe((url) => {
-        if (url) {
-          console.log(url);
-        }
-      });
-  }
-
-  async showSuccesfulUploadAlert() {
-    const alert = await this.alertCtrl.create({
-      cssClass: "basic-alert",
-      header: "Imagen subida",
-      subHeader: "Imagen subida exitosamente a Firebase",
-      message: "Checkea Firebase storage.",
-      buttons: ["OK"],
-    });
-
-    await alert.present();
-  }
-
-  base64ToImage(dataURI) {
-    const fileDate = dataURI.split(",");
-    // const mime = fileDate[0].match(/:(.*?);/)[1];
-    const byteString = atob(fileDate[1]);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const int8Array = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < byteString.length; i++) {
-      int8Array[i] = byteString.charCodeAt(i);
-    }
-    const blob = new Blob([arrayBuffer], { type: "image/png" });
-    return blob;
-  }
-
-
-    scan(){
-    this.barcodeScanner.scan().then(barcodeData => {
-      this.datoscaneado = barcodeData.text; 
-
-     /*  if(this._database.collection('Productos', ref => 
-        ref.where('codigoBarras', '==', this.datoscaneado))){
-
-        console.log("cagondio que he funcionao")
-        console.log("🚀 ~ file: tab3.page.ts ~ line 106 ~ Tab3Page ~ ref.where ~ barcodeData", barcodeData)
-        
-      }else{
-        console.log('Error, na hermano prueba otra cosa');
-      } */
-     }).catch(err => {
-         console.log('Error', err);
-     });
-
-  }
  
-  getCodigoBarras(){
-    this.barcodeScanner.scan().then(barcodeData => {
-      this.datoscaneado = barcodeData.text;
-      
-    this._firestoreService.getCollectionParametro<Producto>(this.path, 'codigoBarras', this.datoscaneado)
-    .subscribe(res  => {
-      console.log(res);
-      console.log(this.datoscaneado);
-      this.productos = res;
-      console.table(this.productos);
-    });
-    }).catch(err => {
-      console.log('Error', err);
-   })
-  }
-
-
-
-  async pruebaLogSinModal(){
-    this._firestoreService.getCollectionParametro<Producto>(this.path, 'codigoBarras', '9788423431311')
-    .subscribe(res  => {
-      console.log(res);
-      this.productos = res;
-      console.table(this.productos);
-    });
-  }
-  
-  
-  async pruebaModalHardcodeado(){ 
-     this.barcodeScanner.scan().then(async barcodeData => {
-      this.datoscaneado = barcodeData.text;
-      const modal = await this.modalController.create({
-        component: ResultsPage,
-        componentProps: {
-          datoscaneado: this.datoscaneado 
-        }
-      });
-      modal.onDidDismiss().then((modelData) => {
-        if (modelData !== null) {
-          this.modelData = modelData.data;
-          console.log('Modal Data : ' + modelData.data);
-        }
-      });
-      return await modal.present();
-   
-    }).catch(err => {
-      console.log('Error', err);
-   }) 
-   
-    this.datoscaneado = '9788423431311';
-    const modal = await this.modalController.create({
-      component: ResultsPage,
-      componentProps: {
-        datoscaneado: this.datoscaneado
-        
-      }
-    });
-
-    modal.onDidDismiss().then((modelData) => {
-      if (modelData !== null) {
-        this.modelData = modelData.data;
-        console.log('Modal Data : ' + modelData.data);
-      }
-    });
-
-    return await modal.present(); 
-   } 
-
-  
-  
+ 
 }
-
-
-
