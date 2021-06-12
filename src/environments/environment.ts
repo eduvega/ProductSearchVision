@@ -5,15 +5,15 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: "",
-    measurementId: ""
+    apiKey: "AIzaSyDEn_c_z8EuPlJVHQwyv_VkLrU1WN8HPHE",
+    authDomain: "productsearchvision.firebaseapp.com",
+    projectId: "productsearchvision",
+    storageBucket: "productsearchvision.appspot.com",
+    messagingSenderId: "14082546872",
+    appId: "1:14082546872:web:d87fdf5371c3f10165e84d",
+    measurementId: "G-4HJQRS142J"
   },
-  googleCloudVisionAPIKey: "",
+  googleCloudVisionAPIKey: "AIzaSyDEn_c_z8EuPlJVHQwyv_VkLrU1WN8HPHE",
 };
 
 /*

@@ -12,17 +12,14 @@ import { AlertController, LoadingController, ToastController } from '@ionic/angu
 })
 export class SetProductosPage implements OnInit {
 
-  joyeria: Joyeria [] = []
-
-  newJoyeria: Joyeria;
-
-  enableNewProduct = false;
-
+  /**
+   * Atributos de la clase
+   */
   private path = 'Joyeria/';
-
+  joyeria: Joyeria [] = []
+  newJoyeria: Joyeria;
+  enableNewProduct = false;
   loading: any;
-
-  newImage='';
   newFile = '';
   datoscaneado: string;
   
@@ -39,15 +36,15 @@ export class SetProductosPage implements OnInit {
 
   async guardarProducto(){
     this.presentLoading();
-    const path = 'Joyeria';
     const name = this.newJoyeria.descripcion;
-    const res = await this._fireStorage.uploadImage(this.newFile, path, name);
+    const res = await this._fireStorage.uploadImage(this.newFile, this.path, name);
     this.newJoyeria.foto = res;
     this._firestoreService.createDoc(this.newJoyeria, this.path, this.newJoyeria.codigo).then( res=> {
       this.loading.dismiss();
       this.presentToast('Guardado con exito');
     }).catch(error =>{
       this.presentToast('No se pudo guardar');
+      console.log(error)
     })
   }
 
@@ -88,6 +85,7 @@ export class SetProductosPage implements OnInit {
     });
     await alert.present();
   }
+  
   nuevo(){
     this.enableNewProduct = true;
     this.newJoyeria = {
@@ -98,6 +96,19 @@ export class SetProductosPage implements OnInit {
       codigo: ''
     };
     
+  }
+
+  /* Metodo que muestra la imagen que el usuario a elegido y va a subir */
+  async newImageUpload(event: any){
+    console.log(event)
+    if (event.target.files && event.target.files[0]){
+      this.newFile = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = ((image) => {
+        this.newJoyeria.foto = image.target.result as string;
+      });
+      reader.readAsDataURL(event.target.files[0]);
+    } 
   }
 
   async presentLoading() {
@@ -118,17 +129,6 @@ export class SetProductosPage implements OnInit {
     toast.present();
   }
 
-  /* Metodo que muestra la imagen que el usuario a elegido y va a subir */
-  async newImageUpload(event: any){
-    console.log(event)
-    if (event.target.files && event.target.files[0]){
-      this.newFile = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = ((image) => {
-        this.newJoyeria.foto = image.target.result as string;
-      });
-      reader.readAsDataURL(event.target.files[0]);
-    } 
-  }
+  
 
 }

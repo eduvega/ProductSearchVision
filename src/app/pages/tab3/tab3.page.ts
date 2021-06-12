@@ -1,7 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { AngularFireStorage } from "@angular/fire/storage";
 import { AlertController, NavController, ToastController } from '@ionic/angular';
-import { finalize } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -20,13 +19,6 @@ import { CarritoService } from '../../services/carrito.service';
 })
 export class Tab3Page implements OnInit{
   modelData: any;
-
-  /**
-   * Atributos camera
-   */
-  base64Image: string;
-  selectedFile: File = null;
-  downloadURL: Observable<string>;
 
   /**
    * Atributos Search y base de datos
@@ -66,12 +58,11 @@ export class Tab3Page implements OnInit{
       this.datoscaneado = barcodeData.text;
     this._firestoreService.getCollectionParametro<Joyeria>(this.path, 'EAN', this.datoscaneado)
     .subscribe(res  => {
-      console.log(res);
-      console.log(this.datoscaneado);
       this.joyeria = res;
-      console.table(this.joyeria);
+      this.presentToast('Se encontraron coincidencias');
     });
     }).catch(err => {
+      this.presentToast('No se pudo encontrar coincidencias');
       console.log('Error', err);
    })
   }
@@ -147,8 +138,6 @@ export class Tab3Page implements OnInit{
         .subscribe(res => {
           console.log(res);
           this.joyeria = res
-
-         
         });
     });
   }
@@ -171,6 +160,4 @@ export class Tab3Page implements OnInit{
     toast.present();
   }
 
- 
- 
 }

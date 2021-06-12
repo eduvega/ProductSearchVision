@@ -24,7 +24,7 @@ export class CarritoService {
 
   bajarCantidadProducto(product){
     for (let [index, p] of this.carrito.entries()) {
-      if(p.id === product.id){
+      if(p.codigo === product.codigo){
         p.cantidad -= 1;if(p.cantidad == 0){
           this.carrito.splice(index, 1);
         }
@@ -35,7 +35,7 @@ export class CarritoService {
 
   removeProducto(producto){
     for(let [index, p] of this.carrito.entries()){
-      if(p.id === producto.id){
+      if(p.codigo === producto.codigo){
         this.carritoNumeroItems.next(this.carritoNumeroItems.value - p.cantidad);
         this.carrito.splice(index, 1);
       }
@@ -45,7 +45,7 @@ export class CarritoService {
   addProducto(producto){
     let agregado = false;
     for(let p of this.carrito){
-      if(p.id === producto.id){
+      if(p.codigo === producto.codigo){
         p.cantidad +=1;
         agregado = true;
         break;

@@ -5,6 +5,7 @@ export interface Joyeria{
     descripcion: string;
     precio: number,
     cantidad?: number,
+    
 }
 
 export interface Pedido {
