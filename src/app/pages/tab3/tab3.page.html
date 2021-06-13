@@ -6,8 +6,7 @@
 
 <ion-content
   [fullscreen]="true"
-  *ngIf="!eanValue !datoscaneado"
->
+  *ngIf="enableNewProduct">
   <div style="text-align: center; padding-top:200px;">
     <ion-button
       (click)="searchProduct()"
@@ -38,7 +37,7 @@
   </ion-fab>
 </ion-content>
 
-<ion-content *ngIf="eanValue || datoscaneado">
+<ion-content *ngIf="enableNewProduct == false">
   <div *ngFor="let item of joyeria">
     <ion-card style="position: relative;">
       <ion-img
@@ -63,7 +62,7 @@
   </div>
 
   <ion-button
-    routerLink="/tabs"
+    (click)="enableNewProduct = true"
     expand="block"
     shape="round"
   >Volver</ion-button>

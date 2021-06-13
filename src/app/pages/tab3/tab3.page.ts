@@ -1,7 +1,7 @@
 import { Component, OnInit} from '@angular/core';
-import { AngularFireStorage } from "@angular/fire/storage";
-import { AlertController, NavController, ToastController } from '@ionic/angular';
-import { Observable } from "rxjs";
+
+import { NavController, ToastController } from '@ionic/angular';
+
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ModalController, LoadingController } from '@ionic/angular';
@@ -27,6 +27,7 @@ export class Tab3Page implements OnInit{
   eanValue: string;
   score: number;
   private path = 'Joyeria/';
+  enableNewProduct = true;
 
   /**
    * Atributos Scanner
@@ -35,17 +36,16 @@ export class Tab3Page implements OnInit{
 
 
   constructor(
-    private alertCtrl: AlertController,
-    private _storage: AngularFireStorage,
     public _firestoreService: FirestoreService,
     public _database: AngularFirestore,
+    public _toastController: ToastController,
+    public _carritoService: CarritoService,
     public nav: NavController,
     private barcodeScanner: BarcodeScanner,
     public modalController: ModalController,
     public loadingController: LoadingController,
     private http: HttpClient,
-    public _toastController: ToastController,
-    public _carritoService: CarritoService,
+  
   ) {
 
   }
@@ -60,6 +60,7 @@ export class Tab3Page implements OnInit{
     .subscribe(res  => {
       this.joyeria = res;
       this.presentToast('Se encontraron coincidencias');
+      this.enableNewProduct = false;
     });
     }).catch(err => {
       this.presentToast('No se pudo encontrar coincidencias');
@@ -138,6 +139,7 @@ export class Tab3Page implements OnInit{
         .subscribe(res => {
           console.log(res);
           this.joyeria = res
+          this.enableNewProduct = false;
         });
     });
   }
