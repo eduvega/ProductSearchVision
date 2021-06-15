@@ -8,7 +8,7 @@
     <ion-content>
       <ion-list>
         <ion-menu-toggle>
-          <ion-item routerLink="/tabs/tab3">
+          <ion-item routerLink="/tabs/search">
             <ion-icon slot="start" name="eye"></ion-icon>
             <ion-label>Buscar Productos</ion-label>
           </ion-item>
@@ -24,6 +24,13 @@
             <ion-icon slot="start" name="cart-sharp"></ion-icon>
             <ion-label>Carrito</ion-label>
           </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+       <br>
+          <ion-button (click)="logOut()" expand="block" shape="round">
+            Salir
+            <ion-icon slot="start" name="log-out"></ion-icon>
+          </ion-button>
         </ion-menu-toggle>
       </ion-list>
     </ion-content>

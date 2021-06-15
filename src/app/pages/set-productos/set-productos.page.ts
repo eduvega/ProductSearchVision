@@ -129,6 +129,4 @@ export class SetProductosPage implements OnInit {
     toast.present();
   }
 
-  
-
 }

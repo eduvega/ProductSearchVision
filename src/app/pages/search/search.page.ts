@@ -13,11 +13,11 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { CarritoService } from '../../services/carrito.service';
 
 @Component({
-  selector: 'app-tab3',
-  templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  selector: 'app-search',
+  templateUrl: 'search.page.html',
+  styleUrls: ['search.page.scss']
 })
-export class Tab3Page implements OnInit{
+export class searchPage implements OnInit{
   modelData: any;
 
   /**
