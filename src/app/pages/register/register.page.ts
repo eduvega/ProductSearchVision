@@ -31,8 +31,6 @@ export class RegisterPage implements OnInit {
     private navCtrl: NavController,
     private authService: AutentificacionService,
     private formBuilder: FormBuilder,
-    private modalCtrl: ModalController,
-    private alert: AlertController,
     public toastController: ToastController
 
   ) { }
@@ -50,21 +48,12 @@ export class RegisterPage implements OnInit {
     });
   }
 
-  async checkOut(){
-    let alert = await this.alert.create({
-      header: 'El usuario ha sido creado!!',
-      message: 'Inicia Sesión',
-      buttons: ['OK']
-    });
-    alert.present().then(()=>{
-      this.modalCtrl.dismiss();
-    });
-  } 
-
+  
   tryRegister(value) {
     this.authService.registerUser(value)
       .then(res => {
         this.errorMessage = "";
+        this.presentToast(); 
       }, err => {
         this.errorMessage = err.message;
         this.successMessage = "";
@@ -72,14 +61,14 @@ export class RegisterPage implements OnInit {
   }
 
   async goLoginPage() {
-    this.presentToast();
-    this.navCtrl.navigateBack('/tabs');
+    /* this.presentToast(); */
+    this.navCtrl.navigateBack('/login');
   }
 
   async presentToast() {
     const toast = await this.toastController.create({
       message: 'Usuario Creado',
-      color:'warning',
+      color:'primary',
       duration: 2000
     });
     toast.present();

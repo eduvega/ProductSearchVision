@@ -6,7 +6,8 @@
 
 <ion-content
   [fullscreen]="true"
-  *ngIf="enableNewProduct">
+  *ngIf="enableNewProduct"
+>
   <div style="text-align: center; padding-top:200px;">
     <ion-button
       (click)="searchProduct()"
@@ -14,10 +15,12 @@
     >Busqueda IA</ion-button>
   </div>
 
-  <img
-    style="height: 150px; width: 150px; margin-left: 110px; padding-top: 10px;"
-    src="../../../assets/img/foto2.png"
-  >
+  <div style="text-align: center; padding-top: 10px;">
+    <img
+      style="height: 150px; width: 150px;"
+      src="../../../assets/img/foto2.png"
+    >
+  </div>
 
   <div style="text-align: center; padding-top: 10px;">
     <ion-button
@@ -62,7 +65,7 @@
   </div>
 
   <ion-button
-    (click)="enableNewProduct = true"
+    (click)="refresh()"
     expand="block"
     shape="round"
   >Volver</ion-button>

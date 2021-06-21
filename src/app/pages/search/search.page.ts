@@ -1,7 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-
 import { NavController, ToastController } from '@ionic/angular';
-
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ModalController, LoadingController } from '@ionic/angular';
@@ -64,7 +62,6 @@ export class searchPage implements OnInit{
     });
     }).catch(err => {
       this.presentToast('No se pudo encontrar coincidencias');
-      console.log('Error', err);
    })
   }
 
@@ -93,13 +90,13 @@ export class searchPage implements OnInit{
 
     const image = await Camera.getPhoto(options);
 
-    const imageUrl = image.base64String;
+    const imageBase64 = image.base64String;
   
     const body ={
       "requests": [
         {
           "image": {
-              "content": imageUrl
+              "content": imageBase64
           },
           "features": [
             {
@@ -125,7 +122,7 @@ export class searchPage implements OnInit{
         console.log(result)
         this.score = result.score;
     
-        if(this.score >= 0.4){
+        if(this.score >= 0.5){
           this.eanValue = result['product'].productLabels[0]['value'];
          
           this.presentToast('Busqueda exitosa');
@@ -144,6 +141,10 @@ export class searchPage implements OnInit{
     });
   }
 
+  refresh(){
+    window.location.reload();
+    this.enableNewProduct = false;
+  }
   
   addCarrito(product){
     product.cantidad=1;

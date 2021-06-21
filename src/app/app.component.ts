@@ -19,12 +19,13 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     this.authService.userDetails().subscribe(res => {
-      console.log('res: hola caracola', res);
+      console.log('res:', res);
       if (res !== null) {
         this.userEmail = res.email;
       } else {
         this.navCtrl.navigateBack('/login');
       }
+      
     }, err => {
       console.log('err', err);
     })

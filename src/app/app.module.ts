@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from "@angular/fire/auth";
-import { environment } from './../environments/environment';
+import { environment } from '../environments/environment';
 import { Camera } from '@ionic-native/camera/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { HttpClientModule, } from '@angular/common/http';
